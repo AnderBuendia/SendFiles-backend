@@ -3,7 +3,14 @@ const connectDB = require('./db/db');
 const cors = require('cors');
 const path = require('path');
 const { existsSync, mkdirSync } = require('fs');
-require('dotenv').config({path: 'config/variables.env'});
+require('dotenv').config({ path: '../.env' });
+
+process.on("uncaughtException", (error) => {
+    console.log("Uncaught Exception..... 💣 🔥 stopping the server....");
+    console.log(error.name, error.message);
+
+    process.exit(1);
+});
 
 /* Create server */
 const app = express();
@@ -26,7 +33,7 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 
 /* Allow public folder */
-app.use(express.static('uploads'));
+app.use(express.static('src/uploads'));
 
 /* App routes */
 app.use('/api/users', require('./routes/users'));
@@ -38,8 +45,23 @@ app.use('/api/files', require('./routes/files'));
 existsSync(path.join(__dirname, 'uploads')) || mkdirSync(path.join(__dirname, "uploads"));
 app.use("uploads", express.static(path.join(__dirname, "uploads")));
 
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
 
 /* App Setup */
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on port ${port}`);
-})
+const server = app.listen(
+    port,
+    console.log(`Server is running in ${process.env.NODE_ENV}
+        on port ${port}`)
+);
+
+// Unhandled Rejection
+process.on("unhandledRejection", (error) => {
+    console.log("Unhandled Rejection..... 💣 🔥 stopping the server....");
+    console.log(error.name, error.message);
+    server.close(() => {
+        // exit code 1 means that there is an issue that caused the program to exit
+        process.exit(1);
+    });
+});

@@ -10,8 +10,6 @@ exports.newLink = async (req, res, next) => {
        return res.status(400).json({ errors: errors.array() });
    }
 
-   //console.log(req.body);
-
    /* Create Link Object */
    const { original_name, name } = req.body;
    
@@ -63,8 +61,6 @@ exports.allLinks = async (req, res) => {
 exports.hasPassword = async (req, res, next) => {
    const { url } = req.params;
 
-   // console.log(url);
-
    /* If link does not exist (verify) */
    const link = await Links.findOne({url});
 
@@ -95,13 +91,10 @@ exports.verifyPassword = async (req, res, next) => {
    } else {
       return res.status(401).json({ msg: 'Wrong password' });
    }
-
-   
 }
 
 /* Get Link */
 exports.getLink = async (req, res, next) => {
-   // console.log(req.params);
    const { url } = req.params;
 
    console.log(url);

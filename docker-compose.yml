@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+   web:
+      restart: always
+      build:
+         context: .
+         dockerfile: Dockerfile
+      container_name: backendapp
+      # volumes allow sharing of data in run-time between host and container
+      volumes:
+         # don't overwrite this folder in container with the local one
+         - /app/node_modules
+         # map current local directory to the /app inside the container
+         - .:/app
+      ports:
+         - 4000:4000
+      depends_on:
+         - mongodb
+      environment:
+         NODE_ENV: ${NODE_ENV}
+         DB_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb
+      networks:
+         - backendapp
+
+   mongodb:
+      image: mongo
+      restart: always
+      ports:
+         - 27017:27017
+      environment:
+         MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+         MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      volumes:
+         # for persistence storage
+         - mongodb-data:/data/db
+      networks:
+         - backendapp
+
+      # mongo-express should only be used privately for development purposes.
+      # It helps us interact with a mongoDB database using our browser
+   mongo-express:
+      image: mongo-express
+      depends_on:
+         - mongodb
+      ports:
+         - 8081:8081
+      environment:
+         ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+         ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+         ME_CONFIG_MONGODB_SERVER: mongodb
+         ME_CONFIG_BASICAUTH_USERNAME: admin
+         ME_CONFIG_BASICAUTH_PASSWORD: admin123456
+      volumes:
+         - mongodb-data
+      networks:
+         - backendapp
+
+networks:
+   backendapp:
+      driver: bridge
+
+volumes:
+   mongodb-data:
+      driver: local

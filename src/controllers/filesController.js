@@ -4,7 +4,6 @@ const fs = require('fs');
 const Links = require('../models/Links');
 
 exports.uploadFile = async (req, res, next) => {
-
     const multerConfig = {
         limits: { fileSize: req.user ? 1024*1024*10 : 1024*1024 },
         storage: fileStorage = multer.diskStorage({
@@ -29,8 +28,6 @@ exports.uploadFile = async (req, res, next) => {
     const upload = multer(multerConfig).single('file');
 
     upload(req, res, async (error) => {
-        //console.log(req.file);
-
         if (!error) {
             res.json({ file: req.file.filename });
         } else {
@@ -43,7 +40,6 @@ exports.uploadFile = async (req, res, next) => {
 exports.deleteFile = async (req, res) => {
     try {
         fs.unlinkSync(__dirname+`/../uploads/${req.file}`)
-        // console.log('Deleted File');
     } catch (error) {
         console.log(error);
     }
@@ -54,11 +50,8 @@ exports.download = async (req, res, next) => {
     /* Get Link */
     const { file } = req.params;
     const link = await Links.findOne({ name: file });
-    // console.log(link);
 
-    const downloadFile = __dirname + '/../uploads/' + file;
-    res.download(downloadFile);
-    //console.log(req.params.file)
+    const downloadFile = `${__dirname}/../uploads/${file}`;
 
     /** Delete the file and data in DB
     *   If downloads = 1 / Delete data from DB and file */
