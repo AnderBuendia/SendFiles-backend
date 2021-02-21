@@ -1,22 +1,54 @@
-# SendFiles-backend
+# SendFiles
 
-Backend of SendFiles. 
+## Using this repository
 
-Quickstart
-----
-* Clone this repo and SendFiles-frontend: https://github.com/AnderBuendia/SendFiles-frontend
+Before use this repository, you need to install [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/install/)
+
+## Backend
+
+You need to clone the following repository:
 
 ```
-cd SendFiles-backend
-npm i
+https://github.com/AnderBuendia/sendfiles-backend.git
+```
+Then go to the directory and modify the .env.example file and define the values:
+
+```
+cd sendfiles-backend
+mv .env.example .env
 ```
 
-* Config variables in .env
+Run docker-compose to build and initialize the server:
+
 ```
-DB_URL=
-FRONTEND_URL=
-SECRET_JWT=
+docker-compose up [-d]
 ```
+
+Go to the web browser and test this at [http://localhost:$PORT](http://localhost:$PORT) and Hello World! must be appears.
+
+## Frontend
+
+Clone the following repository:
+
+```
+https://github.com/AnderBuendia/sendfiles.git
+```
+
+Then go to the directory and modify the .env.example file and define the values:
+
+```
+cd sendfiles-backend
+mv .env.example .env
+```
+
+Run the following commands and go to the web browser to test this at [http://localhost:$PORT](http://localhost:$PORT):
+
+```
+npm install
+
+npm run dev
+```
+
 
 Notes
 ----
