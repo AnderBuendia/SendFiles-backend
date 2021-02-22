@@ -52,6 +52,7 @@ exports.download = async (req, res, next) => {
     const link = await Links.findOne({ name: file });
 
     const downloadFile = `${__dirname}/../uploads/${file}`;
+    res.download(downloadFile);
 
     /** Delete the file and data in DB
     *   If downloads = 1 / Delete data from DB and file */
